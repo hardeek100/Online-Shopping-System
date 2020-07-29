@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Customer extends User implements Serializable, CustomerInterface{
     private String fname, lname, phone, address, creditCard;
-
+    ArrayList<Items> itemList = new ArrayList<>();
 
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
         super(id, pw);
@@ -16,17 +16,39 @@ public class Customer extends User implements Serializable, CustomerInterface{
         this.creditCard = crC;
     }
 
-    public void addItems(Scanner in, Set<Items> items_){
-        ArrayList<Items> itemList = new ArrayList<>(items_);
-        System.out.print("Adding items.");  //Just to check this method. Add your class addItems here.
+    public void addItems(Scanner in, Items item_) {//Set<Items> items_){
+        //ArrayList<Items> itemList = new ArrayList<>(items_);
+        itemList.add(item_);
+        System.out.println("The item has been added");  //Just to check this method. Add your class addItems here.
     }
 
-    public void RemoveItems(){
-        System.out.print("removed items");  //Add your remove class here.
+    public void RemoveItems(Scanner in){
+        int choice;
+        int num;
+        int q;
+        showCart();
+        System.out.println("Select item to remove: ");
+        choice = in.nextInt();
+        choice--;
+        q = itemList.get(choice).quantity;
+        if(q > 1){
+            System.out.println("how many would you like to delete?");
+            num = in.nextInt();
+            if(num == q)
+                itemList.remove(choice);
+            else 
+                itemList.get(choice).update(num);
+        }
+        else 
+           itemList.remove(choice); 
+
     }
 
     public void showCart(){
-        System.out.print("Your cart...."); //Add your show cart here.
+        for (int i = 0; i < itemList.size(); i++){
+            System.out.print(i+1 + ". ");
+            itemList.get(i).display();
+        }
     }
 
     public void MakeOrderRequest(){

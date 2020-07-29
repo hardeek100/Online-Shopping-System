@@ -105,22 +105,22 @@ public class OnlineShoppingSystem implements Welcome{
                     break;
                 case 4:
                     //Select items class
-                    System.out.println("Select your items...");
+                    SelectItems sel = new SelectItems(input, (Customer)this.usr);
                     break;
                 case 5:
                     //View cart class
-                    System.out.println("Viewing cart items...");
+                    ((Customer)this.usr).showCart();
                     break;
                 case 6:
                     //Remove items
-                    System.out.println("Removing items....");
+                    ((Customer)this.usr).RemoveItems(input);
                     break;
                 case 7:
                     //Make order req
                     System.out.println("Making order request....");
                     break;
                 case 8:
-                    //View order
+                    //View order0
                     System.out.println("Viewing order....");
                     break;
                 case 9:
@@ -215,6 +215,4 @@ public class OnlineShoppingSystem implements Welcome{
             return new HashMap<String, Customer>();
         }
     }
-
-
 }
