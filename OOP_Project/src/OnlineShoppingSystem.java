@@ -106,6 +106,7 @@ public class OnlineShoppingSystem implements Welcome{
                 case 4:
                     //Select items class
                     SelectItems sel = new SelectItems(input, (Customer)this.usr);
+                    exportCustomerData();
                     break;
                 case 5:
                     //View cart class
@@ -114,6 +115,7 @@ public class OnlineShoppingSystem implements Welcome{
                 case 6:
                     //Remove items
                     ((Customer)this.usr).RemoveItems(input);
+                    exportCustomerData();
                     break;
                 case 7:
                     //Make order req

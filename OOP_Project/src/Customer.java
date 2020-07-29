@@ -6,6 +6,7 @@ import java.util.Set;
 public class Customer extends User implements Serializable, CustomerInterface{
     private String fname, lname, phone, address, creditCard;
     ArrayList<Items> itemList = new ArrayList<>();
+    
     double total;
 
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
