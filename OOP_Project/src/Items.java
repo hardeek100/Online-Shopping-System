@@ -10,6 +10,10 @@ public class Items implements Serializable, CustomerInterface {
         this.price = price;
     }
 
+    void update (int q, double price) {
+        this.price += price;
+        this.quantity += q;
+    }
     void update(int q) {
         this.price = this.price - ((this.price/this.quantity) * q);
         this.quantity = this.quantity - q;

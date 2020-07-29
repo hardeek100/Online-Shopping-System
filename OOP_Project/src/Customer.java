@@ -18,7 +18,20 @@ public class Customer extends User implements Serializable, CustomerInterface{
 
     public void addItems(Scanner in, Items item_) {//Set<Items> items_){
         //ArrayList<Items> itemList = new ArrayList<>(items_);
-        itemList.add(item_);
+        if(itemList.size() == 0)
+            itemList.add(item_);
+        else {
+            int flag = 0;
+            for(int i = 0; i < itemList.size(); i++) {
+                if(item_.name.equals(itemList.get(i).name)) {
+                    itemList.get(i).update(item_.quantity, item_.price);
+                    flag = 1;
+                }
+            }
+            if (flag == 0) {
+                itemList.add(item_);
+            }
+        }
         System.out.println("The item has been added");  //Just to check this method. Add your class addItems here.
     }
 
@@ -41,7 +54,7 @@ public class Customer extends User implements Serializable, CustomerInterface{
         }
         else 
            itemList.remove(choice); 
-
+        System.out.println("The item has been removed");
     }
 
     public void showCart(){
