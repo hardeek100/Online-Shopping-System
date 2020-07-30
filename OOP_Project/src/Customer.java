@@ -6,6 +6,8 @@ import java.util.Set;
 public class Customer extends User implements Serializable, CustomerInterface{
     private String fname, lname, phone, address, creditCard;
     ArrayList<Items> itemList = new ArrayList<>();
+    
+    double total;
 
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
         super(id, pw);
@@ -18,7 +20,24 @@ public class Customer extends User implements Serializable, CustomerInterface{
 
     public void addItems(Scanner in, Items item_) {//Set<Items> items_){
         //ArrayList<Items> itemList = new ArrayList<>(items_);
-        itemList.add(item_);
+        if(itemList.size() == 0) {
+            itemList.add(item_);
+            total = item_.price;
+        }
+        else {
+            int flag = 0;
+            for(int i = 0; i < itemList.size(); i++) {
+                if(item_.name.equals(itemList.get(i).name)) {
+                    itemList.get(i).update(item_.quantity, item_.price);
+                    total += item_.price;
+                    flag = 1;
+                }
+            }
+            if (flag == 0) {
+                itemList.add(item_);
+                total += item_.price;
+            }
+        }
         System.out.println("The item has been added");  //Just to check this method. Add your class addItems here.
     }
 
@@ -34,14 +53,20 @@ public class Customer extends User implements Serializable, CustomerInterface{
         if(q > 1){
             System.out.println("how many would you like to delete?");
             num = in.nextInt();
-            if(num == q)
+            if(num == q) {
+                total -= itemList.get(choice).price;
                 itemList.remove(choice);
-            else 
+            }
+            else {
+                total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
                 itemList.get(choice).update(num);
+            }
         }
-        else 
-           itemList.remove(choice); 
-
+        else {
+            total -= itemList.get(choice).price;
+            itemList.remove(choice); 
+        }
+        System.out.println("The item has been removed");
     }
 
     public void showCart(){
@@ -49,6 +74,7 @@ public class Customer extends User implements Serializable, CustomerInterface{
             System.out.print(i+1 + ". ");
             itemList.get(i).display();
         }
+        System.out.println("Total: $" + total);
     }
 
     public void MakeOrderRequest(){
