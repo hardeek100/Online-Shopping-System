@@ -153,9 +153,9 @@ public class Customer extends User implements Serializable, CustomerInterface{
             System.out.println("Order date: " + orders.get(this.ID).get(o).date);
             System.out.println("Status: " + orders.get(this.ID).get(o).getStatus());
             orders.get(this.ID).get(o).details();
-            System.out.println("\t\t Items \t Quantity \t Cost");
+            System.out.println("Items Quantity  Cost");
             orders.get(this.ID).get(o).view();
-            System.out.println("\t Total \t\t ----------------- " + orders.get(this.ID).get(o).getTotal());
+            System.out.println("\t Total \t\t ----------------- " + String.format("%.2f", orders.get(this.ID).get(o).getTotal()));
         }
 
     }
