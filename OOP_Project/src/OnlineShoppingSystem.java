@@ -134,7 +134,6 @@ public class OnlineShoppingSystem implements Welcome{
                     Order uO = ((Customer)this.usr).MakeOrderRequest(input, bank_);
                     System.out.println(uO.shortDetails());
                     unprocessedOrders.add(uO);
-                    System.out.println(allOrders.keySet());
                     allOrders.get(usr.id).add(uO);
                     exportOrders();
                     break;

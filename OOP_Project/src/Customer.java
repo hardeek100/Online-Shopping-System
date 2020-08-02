@@ -105,7 +105,8 @@ public class Customer extends User implements Serializable, CustomerInterface{
             System.out.println(auth);
             if (auth > 0) {
                 SimpleDateFormat date_ = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), itemList);
+                ArrayList<Items> orderList  = this.itemList;
+                requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), orderList);
                 requestedOrder.setStatus("ORDERED");
 
             } else {
