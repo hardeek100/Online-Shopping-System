@@ -56,39 +56,60 @@ public class Customer extends User implements Serializable, CustomerInterface{
     }
 
     public void RemoveItems(Scanner in){
-        int choice;
-        int num;
-        int q;
-        showCart();
-        System.out.println("Select item to remove: ");
-        choice = in.nextInt();
-        choice--;
-        q = itemList.get(choice).quantity;
-        if(q > 1){
-            System.out.println("how many would you like to delete?");
-            num = in.nextInt();
-            if(num == q) {
-                total -= itemList.get(choice).price;
-                itemList.remove(choice);
-            }
-            else {
-                total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
-                itemList.get(choice).update(num);
-            }
+        if(itemList.isEmpty()){  // checks is empty or not 
+            System.out.println("You cart is already empty");
         }
         else {
-            total -= itemList.get(choice).price;
-            itemList.remove(choice); 
+            int choice = 0;
+            int num;
+            int q;
+            showCart(); 
+            in.nextLine();
+            System.out.println("Select item to remove: ");
+            String choiceChar = in.nextLine();
+            try {
+                choice = Integer.parseInt(choiceChar);
+                while(choice >= itemList.size() || choice <= 0) {
+                    System.out.println("Invalid choice\nEnter again: ");
+                    choiceChar = in.nextLine();
+                    choice = Integer.parseInt(choiceChar);
+                }
+            }catch(Exception e) {
+                System.out.println("....");
+            }
+            choice--;
+            q = itemList.get(choice).quantity;
+            if(q > 1){
+                System.out.println("how many would you like to delete?");
+                num = in.nextInt();
+                if(num == q) { // if quantity equals the number to delete then remove the entire object
+                    total -= itemList.get(choice).price;
+                    itemList.remove(choice);
+                }
+                else { // else update the ibjects quantity 
+                    total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
+                    itemList.get(choice).update(num);
+                }
+            }
+            else {
+                total -= itemList.get(choice).price;
+                itemList.remove(choice); 
+            }
+            System.out.println("The item has been removed");
         }
-        System.out.println("The item has been removed");
     }
 
     public void showCart(){
-        for (int i = 0; i < itemList.size(); i++){
-            System.out.print(i+1 + ". ");
-            itemList.get(i).display();
+        if(itemList.isEmpty()){
+            System.out.println("Your cart is empty");
         }
-        System.out.println("Total: $" + total);
+        else {
+            for (int i = 0; i < itemList.size(); i++){ // displays items one at a time 
+                System.out.print(i+1 + ". ");
+                itemList.get(i).display();
+            }
+            System.out.println("Total: $" + String.format("%.2f", total));
+        }
     }
 
     public Order MakeOrderRequest(Scanner in, Bank bank_) {
@@ -147,9 +168,9 @@ public class Customer extends User implements Serializable, CustomerInterface{
             System.out.println("Order date: " + orders.get(this.ID).get(o).date);
             System.out.println("Status: " + orders.get(this.ID).get(o).getStatus());
             orders.get(this.ID).get(o).details();
-            System.out.println("\t\t Items \t Quantity \t Cost");
+            System.out.println("Items Quantity  Cost");
             orders.get(this.ID).get(o).view();
-            System.out.println("\t Total \t\t ----------------- " + orders.get(this.ID).get(o).getTotal());
+            System.out.println("\t Total \t\t ----------------- " + String.format("%.2f", orders.get(this.ID).get(o).getTotal()));
         }
 
     }
