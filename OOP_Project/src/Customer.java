@@ -1,17 +1,16 @@
-import java.io.DataInputStream;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.*;
+   import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Customer extends User implements Serializable, CustomerInterface{
-    private String fname, lname, phone, address, creditCard, ID;
+    private String fname, lname, phone, address, creditCard;
     ArrayList<Items> itemList = new ArrayList<>();
     
     double total;
 
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
         super(id, pw);
-        this.ID = id;
         this.fname = f;
         this.lname = l;
         this.phone = ph;
@@ -19,18 +18,17 @@ public class Customer extends User implements Serializable, CustomerInterface{
         this.creditCard = crC;
     }
 
-    public void addItems(Scanner in, Items item_) {//Set<Items> items_){
-        //ArrayList<Items> itemList = new ArrayList<>(items_);
-        if(itemList.size() == 0) {
+    public void addItems(Scanner in, Items item_) {
+        if(itemList.isEmpty()) {  // if list is empty adds to first emelent in list 
             itemList.add(item_);
             total = item_.price;
         }
         else {
             int flag = 0;
             for(int i = 0; i < itemList.size(); i++) {
-                if(item_.name.equals(itemList.get(i).name)) {
+                if(item_.name.equals(itemList.get(i).name)) { // for adding more to an item that already exists in the cart
                     itemList.get(i).update(item_.quantity, item_.price);
-                    total += item_.price;
+                    total += item_.price;  // updates the total price 
                     flag = 1;
                 }
             }
@@ -39,43 +37,64 @@ public class Customer extends User implements Serializable, CustomerInterface{
                 total += item_.price;
             }
         }
-        System.out.println("The item has been added");  //Just to check this method. Add your class addItems here.
+        System.out.println("The item has been added");  
     }
 
     public void RemoveItems(Scanner in){
-        int choice;
-        int num;
-        int q;
-        showCart();
-        System.out.println("Select item to remove: ");
-        choice = in.nextInt();
-        choice--;
-        q = itemList.get(choice).quantity;
-        if(q > 1){
-            System.out.println("how many would you like to delete?");
-            num = in.nextInt();
-            if(num == q) {
-                total -= itemList.get(choice).price;
-                itemList.remove(choice);
-            }
-            else {
-                total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
-                itemList.get(choice).update(num);
-            }
+        if(itemList.isEmpty()){  // checks is empty or not 
+            System.out.println("You cart is already empty");
         }
         else {
-            total -= itemList.get(choice).price;
-            itemList.remove(choice); 
+            int choice = 0;
+            int num;
+            int q;
+            showCart(); 
+            in.nextLine();
+            System.out.println("Select item to remove: ");
+            String choiceChar = in.nextLine();
+            try {
+                choice = Integer.parseInt(choiceChar);
+                while(choice >= itemList.size() || choice <= 0) {
+                    System.out.println("Invalid choice\nEnter again: ");
+                    choiceChar = in.nextLine();
+                    choice = Integer.parseInt(choiceChar);
+                }
+            }catch(Exception e) {
+                System.out.println("....");
+            }
+            choice--;
+            q = itemList.get(choice).quantity;
+            if(q > 1){
+                System.out.println("how many would you like to delete?");
+                num = in.nextInt();
+                if(num == q) { // if quantity equals the number to delete then remove the entire object
+                    total -= itemList.get(choice).price;
+                    itemList.remove(choice);
+                }
+                else { // else update the ibjects quantity 
+                    total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
+                    itemList.get(choice).update(num);
+                }
+            }
+            else {
+                total -= itemList.get(choice).price;
+                itemList.remove(choice); 
+            }
+            System.out.println("The item has been removed");
         }
-        System.out.println("The item has been removed");
     }
 
     public void showCart(){
-        for (int i = 0; i < itemList.size(); i++){
-            System.out.print(i+1 + ". ");
-            itemList.get(i).display();
+        if(itemList.isEmpty()){
+            System.out.println("Your cart is empty");
         }
-        System.out.println("Total: $" + total);
+        else {
+            for (int i = 0; i < itemList.size(); i++){ // displays items one at a time 
+                System.out.print(i+1 + ". ");
+                itemList.get(i).display();
+            }
+            System.out.println("Total: $" + String.format("%.2f", total));
+        }
     }
 
     public Order MakeOrderRequest(Scanner in, Bank bank_) {
