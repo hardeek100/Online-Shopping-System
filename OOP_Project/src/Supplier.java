@@ -14,7 +14,13 @@ public class Supplier extends User implements SupplierInterface{
         while (use_case == -1) {
             System.out.print(MENU);
             System.out.print(INSTR);
-            int choice = in.nextInt();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -10;
+            }
             switch (choice) {
                 case 1:
                     use_case = 9;
@@ -42,7 +48,13 @@ public class Supplier extends User implements SupplierInterface{
                 System.out.println(i+1 + ". " + orders_.get(i).shortDetails());
             }
             System.out.println(WHICH);
-            int choice = in.nextInt();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -11;
+            }
             if(choice < 0 || choice > orders_.size()){
                 System.out.println("invalid input!");
                 continue;
@@ -63,7 +75,13 @@ public class Supplier extends User implements SupplierInterface{
                 System.out.println(i+1+ ". " + processedOrder.get(i).shortDetails());
             }
             System.out.println(WHICH);
-            int choice = in.nextInt();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -11;
+            }
             if(choice < 0 || choice > processedOrder.size()){
                 System.out.println("invalid input!");
                 continue;
@@ -73,7 +91,7 @@ public class Supplier extends User implements SupplierInterface{
             }
             processedOrder.get(choice-1).setStatus("SHIPPED");
             processedOrder.remove(choice-1);
-            System.out.println("Order has been ship.");
+            System.out.println("Order has been shipped.");
             break;
         }
 

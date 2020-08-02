@@ -24,7 +24,13 @@ public class OnlineShoppingSystem implements Welcome{
             while (use_case == -1) {
                 System.out.print(MENU);
                 System.out.print(INSTR);
-                int choice = in.nextInt();
+                String choiceChar = in.nextLine();
+                int choice = 0;
+                try {
+                    choice = Integer.parseInt(choiceChar);
+                }catch (Exception e){
+                    choice = -11;
+                }
                 switch (choice) {
                     case 1:
                         use_case = 3;
@@ -36,7 +42,7 @@ public class OnlineShoppingSystem implements Welcome{
                         use_case = 0;
                         break;
                     default:
-                        System.out.print("Invalid input!");
+                        System.out.print(choiceChar + " is an invalid input!");
                 }
             }
             return use_case;
@@ -176,7 +182,7 @@ public class OnlineShoppingSystem implements Welcome{
                 fileOut.println(key + (char)31 + this.rawID.get(key));
             }
             fileOut.close();
-            System.out.println("RAWID exported.");
+            //System.out.println("RAWID exported.");
         }catch (Exception e){
             System.out.println("Cannot export rawid");
         }
@@ -210,10 +216,10 @@ public class OnlineShoppingSystem implements Welcome{
             }
             ffOut.close();
             obOut.close();
-            System.out.println("Customer data added to file " + INFO);
+            //System.out.println("Customer data added to file " + INFO);
         }catch (Exception e){
             System.out.println("Cannot export customer data");
-            //System.out.println(e);
+
         }
     }
 
@@ -229,7 +235,6 @@ public class OnlineShoppingSystem implements Welcome{
             return cust;
         }catch (Exception e){
             System.out.println("Cannot import customer data");
-            //System.out.println(e);
             return new HashMap<String, Customer>();
         }
     }
@@ -277,10 +282,10 @@ public class OnlineShoppingSystem implements Welcome{
             }
             ffOut.close();
             obOut.close();
-            System.out.println("Orders added to file " + ORDERS);
+            //System.out.println("Orders added to file " + ORDERS);
         }catch (Exception e){
-            //System.out.println("Cannot export Orders");
-            System.out.println(e);
+            System.out.println("Cannot export Orders");
+
         }
     }
 

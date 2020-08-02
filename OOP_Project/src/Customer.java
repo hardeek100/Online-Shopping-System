@@ -190,7 +190,13 @@ public class Customer extends User implements Serializable, CustomerInterface{
         while (use_case == -1) {
             System.out.print(MENU);
             System.out.print(INSTR);
-            int choice = in.nextInt();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -10;
+            }
             switch (choice) {
                 case 1:
                     use_case = 4;

@@ -19,8 +19,14 @@ abstract class User implements Serializable {
         pw =ID = role = "";
         while(c == 0){
             System.out.println("\nSelect your role.\n1.Customer \n2.Supplier");
-            int choice = in.nextInt();
-            in.nextLine();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -11;
+            }
+
             if (choice == 1){
                 role = "Customer";
                 c = 1;
@@ -38,7 +44,6 @@ abstract class User implements Serializable {
         while(c == 0) {
             System.out.print("Enter an ID: ");
             ID = in.nextLine();
-            System.out.println("Here!");
             if (rawID.get(ID) != null) {
                 System.out.println("User ID already taken. Please try again.\n");
                 continue;
