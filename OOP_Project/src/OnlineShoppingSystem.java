@@ -6,12 +6,14 @@ import java.util.Scanner;
 
 public class OnlineShoppingSystem implements Welcome{
     private Scanner input = new Scanner(System.in);
-    private HashMap<String, String> rawID;
-    private HashMap<String, Customer> customers;
+    private HashMap<String, String> rawID;                  // Login credentials of user.
+    private HashMap<String, Customer> customers;            // Customer's data
 
-    // private ArrayList<Order> orders;
-   // private ArrayList<Order> processedOrder;
+     private ArrayList<Order> unprocessedOrders;        //
+    private ArrayList<Order> processedOrder;
+    private HashMap<String, ArrayList<Order>> allOrders;
 
+    Bank bank_ = new Bank();
     private User usr;
     private Supplier supplier = new Supplier();
 
@@ -44,7 +46,9 @@ public class OnlineShoppingSystem implements Welcome{
     public OnlineShoppingSystem(){
         this.rawID = importRawID();
         this.customers = importCustomerData();
+        this.allOrders = importOrders();
         this.usr = visitor;
+
     }
 
 
@@ -70,6 +74,7 @@ public class OnlineShoppingSystem implements Welcome{
 
             switch(choice){
                 case 0:     //Exit
+                    exportOrders();
                     System.out.print("*********Thank you for using this online shopping system.*********");
                     c = 1;
                     break;
@@ -95,10 +100,12 @@ public class OnlineShoppingSystem implements Welcome{
                     break;
                 case 2:     //Logout
                     this.usr = visitor;
+                    exportOrders();
                     System.out.println("Logged out...");
                     break;
                 case 3:     //Create Account
                     this.usr.createAccount(this.input, this.rawID, this.customers);
+                    allOrders.put(usr.id, new ArrayList<>());
                     exportRawID();
                     exportCustomerData();
                     System.out.print("Congratulation! your account has been created.");
@@ -118,33 +125,39 @@ public class OnlineShoppingSystem implements Welcome{
                     exportCustomerData();
                     break;
                 case 7:
-                    //Make order req
-                    System.out.println("Making order request....");
+                    Order uO = ((Customer)this.usr).MakeOrderRequest(input, bank_);
+                    System.out.println(uO.shortDetails());
+                    unprocessedOrders.add(uO);
+                    System.out.println(usr.id);
+                    allOrders.get(usr.id).add(uO);
+                    exportOrders();
                     break;
-                case 8:
-                    //View order0
-                    System.out.println("Viewing order....");
+                case 8: //View Order
+                    if(allOrders.isEmpty()){
+                        System.out.println("No orders to view.");
+
+                    }else {
+                        System.out.println("****Available Orders*****");
+                        System.out.println(allOrders.get(0).get(0).shortDetails());
+                    }
                     break;
-                case 9:
-                    //Process order
-                    System.out.println("Processing order...");
-//                    if(orders.isEmpty()){
-//                        System.out.println("No order to process.");
-//                        break;
-//                    }else {
-//                        supplier.processOrder(input,orders, processedOrder);
-//                    }
+                case 9: //Process order
+                    if(unprocessedOrders.isEmpty()){
+                        System.out.println("No orders to process");
+                    }else {
+                        supplier.processOrder(input, unprocessedOrders, processedOrder);
+                    }
 
                     break;
                 case 10:
-                    System.out.println("Shipping order....");
-//                    if(processedOrder.isEmpty()){
-//                        System.out.println("No orders ready to ship");
-//                        break;
-//                    }
-//                    else{
-//                        supplier.ConfirmOrder(input, processedOrder);
-//                    }
+                    if(processedOrder.isEmpty()){
+                        System.out.println("No orders ready to ship");
+                        break;
+                    }
+                    else{
+                        supplier.ConfirmOrder(input, processedOrder);
+                    }
+
                     break;
 
             }
@@ -217,4 +230,55 @@ public class OnlineShoppingSystem implements Welcome{
             return new HashMap<String, Customer>();
         }
     }
+
+    private HashMap<String, ArrayList<Order>> importOrders(){
+        processedOrder = new ArrayList<>();
+        unprocessedOrders = new ArrayList<>();
+        try{
+            HashMap<String, ArrayList<Order>> orrr = new HashMap<>();
+            Scanner file = new Scanner(new File(ORDERS));
+            FileInputStream FileIN = new FileInputStream(ORDER_OBJECT);
+            ObjectInputStream Obin = new ObjectInputStream(FileIN);
+
+            while (file.hasNextLine()){
+                String id = file.nextLine();
+                ArrayList<Order> orders_ = (ArrayList<Order>)Obin.readObject();
+                orrr.put(id, orders_);
+
+                for(Order o: orders_){
+                    if(o.getStatus().equals("ORDERED"))
+                        unprocessedOrders.add(o);
+                    else if(o.getStatus().equals("READY"))
+                        processedOrder.add(o);
+                }
+            }
+            file.close();
+            Obin.close();
+            return orrr;
+        }catch (Exception e){
+            System.out.println("Unable to import Orders");
+            return new HashMap<String, ArrayList<Order>>();
+
+        }
+
+
+    }
+    private void exportOrders(){
+        try {
+            PrintWriter ffOut = new PrintWriter(ORDERS);
+            FileOutputStream fileOut = new FileOutputStream(ORDER_OBJECT);
+            ObjectOutputStream obOut = new ObjectOutputStream(fileOut);
+            for(String key:allOrders.keySet()){
+                ffOut.println(key);
+                obOut.writeObject(allOrders.get(key));
+            }
+            ffOut.close();
+            obOut.close();
+            System.out.println("Orders added to file " + ORDERS);
+        }catch (Exception e){
+            System.out.println("Cannot export Orders");
+            //System.out.println(e);
+        }
+    }
+
 }

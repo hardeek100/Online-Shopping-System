@@ -8,5 +8,7 @@ public interface Welcome {
     public static final String INFO = "customers.dat";
     public static final String INFO_OBJECTS = "customerObj.objects";
     public static final String IDS = "rawID.dat";
+    public static final String ORDERS = "orders.dat";
+    public static final String ORDER_OBJECT = "orders.objects";
 
 }
