@@ -1,16 +1,29 @@
-   import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Set;
+/*
+        Class Customer
+            This class would run use cases for the customer.
+            1. Add items
+            2. Remove items
+            3. Show cart
+            4. Make Order Request
+            5. View Order
+            6. Exit
+
+ */
+
+
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Customer extends User implements Serializable, CustomerInterface{
-    private String fname, lname, phone, address, creditCard;
-    ArrayList<Items> itemList = new ArrayList<>();
-    
-    double total;
+    private String fname, lname, phone, address, creditCard, ID;
+    ArrayList<Items> itemList = new ArrayList<>();                      // Arraylist to store customers cart items.
+    double total;                                                       // Total cost of cart items.
 
+    //Constructor
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
-        super(id, pw);
+        super(id, pw);                  // Calling super class "User"
+        this.ID = id;
         this.fname = f;
         this.lname = l;
         this.phone = ph;
@@ -18,17 +31,19 @@ public class Customer extends User implements Serializable, CustomerInterface{
         this.creditCard = crC;
     }
 
+    //------------------------------------------------ Use cases --------------------------------------------------
+
     public void addItems(Scanner in, Items item_) {
-        if(itemList.isEmpty()) {  // if list is empty adds to first emelent in list 
+            if(itemList.size() == 0) {
             itemList.add(item_);
             total = item_.price;
         }
         else {
             int flag = 0;
             for(int i = 0; i < itemList.size(); i++) {
-                if(item_.name.equals(itemList.get(i).name)) { // for adding more to an item that already exists in the cart
+                if(item_.name.equals(itemList.get(i).name)) {
                     itemList.get(i).update(item_.quantity, item_.price);
-                    total += item_.price;  // updates the total price 
+                    total += item_.price;
                     flag = 1;
                 }
             }
@@ -37,64 +52,43 @@ public class Customer extends User implements Serializable, CustomerInterface{
                 total += item_.price;
             }
         }
-        System.out.println("The item has been added");  
+        System.out.println("The item has been added");  //Just to check this method. Add your class addItems here.
     }
 
     public void RemoveItems(Scanner in){
-        if(itemList.isEmpty()){  // checks is empty or not 
-            System.out.println("You cart is already empty");
-        }
-        else {
-            int choice = 0;
-            int num;
-            int q;
-            showCart(); 
-            in.nextLine();
-            System.out.println("Select item to remove: ");
-            String choiceChar = in.nextLine();
-            try {
-                choice = Integer.parseInt(choiceChar);
-                while(choice >= itemList.size() || choice <= 0) {
-                    System.out.println("Invalid choice\nEnter again: ");
-                    choiceChar = in.nextLine();
-                    choice = Integer.parseInt(choiceChar);
-                }
-            }catch(Exception e) {
-                System.out.println("....");
-            }
-            choice--;
-            q = itemList.get(choice).quantity;
-            if(q > 1){
-                System.out.println("how many would you like to delete?");
-                num = in.nextInt();
-                if(num == q) { // if quantity equals the number to delete then remove the entire object
-                    total -= itemList.get(choice).price;
-                    itemList.remove(choice);
-                }
-                else { // else update the ibjects quantity 
-                    total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
-                    itemList.get(choice).update(num);
-                }
+        int choice;
+        int num;
+        int q;
+        showCart();
+        System.out.println("Select item to remove: ");
+        choice = in.nextInt();
+        choice--;
+        q = itemList.get(choice).quantity;
+        if(q > 1){
+            System.out.println("how many would you like to delete?");
+            num = in.nextInt();
+            if(num == q) {
+                total -= itemList.get(choice).price;
+                itemList.remove(choice);
             }
             else {
-                total -= itemList.get(choice).price;
-                itemList.remove(choice); 
+                total -= ((itemList.get(choice).price/itemList.get(choice).quantity) * num);
+                itemList.get(choice).update(num);
             }
-            System.out.println("The item has been removed");
         }
+        else {
+            total -= itemList.get(choice).price;
+            itemList.remove(choice); 
+        }
+        System.out.println("The item has been removed");
     }
 
     public void showCart(){
-        if(itemList.isEmpty()){
-            System.out.println("Your cart is empty");
+        for (int i = 0; i < itemList.size(); i++){
+            System.out.print(i+1 + ". ");
+            itemList.get(i).display();
         }
-        else {
-            for (int i = 0; i < itemList.size(); i++){ // displays items one at a time 
-                System.out.print(i+1 + ". ");
-                itemList.get(i).display();
-            }
-            System.out.println("Total: $" + String.format("%.2f", total));
-        }
+        System.out.println("Total: $" + total);
     }
 
     public Order MakeOrderRequest(Scanner in, Bank bank_) {
@@ -178,6 +172,8 @@ public class Customer extends User implements Serializable, CustomerInterface{
         }
         return cc;
     }
+
+    //---------------------------------------------- getset methods ---------------------------------------------------------
 
     public String getName(){
         return this.fname + " " + this.lname;

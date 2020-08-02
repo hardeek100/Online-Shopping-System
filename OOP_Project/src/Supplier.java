@@ -1,4 +1,9 @@
-import java.lang.reflect.Array;
+/*
+        Actor: Supplier class
+        use cases:
+            process order and confirm order.
+
+ */
 import java.util.ArrayList;
 import java.util.Scanner;
 
