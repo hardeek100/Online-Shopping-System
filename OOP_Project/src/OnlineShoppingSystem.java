@@ -104,10 +104,10 @@ public class OnlineShoppingSystem implements Welcome{
                     System.out.println("Logged out...");
                     break;
                 case 3:     //Create Account
-                    this.usr.createAccount(this.input, this.rawID, this.customers);
-                    allOrders.put(usr.id, new ArrayList<>());
+                    this.usr.createAccount(this.input, this.rawID, this.customers, this.allOrders);
                     exportRawID();
                     exportCustomerData();
+                    exportOrders();
                     System.out.print("Congratulation! your account has been created.");
                     break;
                 case 4:
@@ -128,18 +128,21 @@ public class OnlineShoppingSystem implements Welcome{
                     Order uO = ((Customer)this.usr).MakeOrderRequest(input, bank_);
                     System.out.println(uO.shortDetails());
                     unprocessedOrders.add(uO);
-                    System.out.println(usr.id);
+                    System.out.println(allOrders.keySet());
                     allOrders.get(usr.id).add(uO);
                     exportOrders();
                     break;
                 case 8: //View Order
-                    if(allOrders.isEmpty()){
-                        System.out.println("No orders to view.");
 
-                    }else {
-                        System.out.println("****Available Orders*****");
-                        System.out.println(allOrders.get(0).get(0).shortDetails());
-                    }
+                    ((Customer)this.usr).ViewOrder(input, allOrders);
+//                    if(allOrders.isEmpty()){
+//                        System.out.println("No orders to view.");
+//
+//                    }else {
+//                        System.out.println("****Available Orders*****");
+//                        System.out.println(allOrders.keySet());
+//                        System.out.println(allOrders.get(this.usr.id).get(0).shortDetails());
+//                    }
                     break;
                 case 9: //Process order
                     if(unprocessedOrders.isEmpty()){
@@ -276,8 +279,8 @@ public class OnlineShoppingSystem implements Welcome{
             obOut.close();
             System.out.println("Orders added to file " + ORDERS);
         }catch (Exception e){
-            System.out.println("Cannot export Orders");
-            //System.out.println(e);
+            //System.out.println("Cannot export Orders");
+            System.out.println(e);
         }
     }
 

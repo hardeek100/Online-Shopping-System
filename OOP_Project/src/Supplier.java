@@ -50,7 +50,7 @@ public class Supplier extends User implements SupplierInterface{
             if(choice == 0){
                 return;
             }
-            orders_.get(choice-1).setStatus("Ready");
+            orders_.get(choice-1).setStatus("READY");
             processedOrder.add(orders_.remove(choice-1));
             System.out.println("Order has been processed and ready to ship.");
             break;
@@ -71,7 +71,7 @@ public class Supplier extends User implements SupplierInterface{
             if(choice == 0){
                 return;
             }
-            processedOrder.get(choice-1).setStatus("Shipped");
+            processedOrder.get(choice-1).setStatus("SHIPPED");
             processedOrder.remove(choice-1);
             System.out.println("Order has been ship.");
             break;

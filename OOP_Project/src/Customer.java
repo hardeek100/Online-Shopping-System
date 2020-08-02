@@ -1,19 +1,17 @@
 import java.io.DataInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Customer extends User implements Serializable, CustomerInterface{
-    private String fname, lname, phone, address, creditCard;
+    private String fname, lname, phone, address, creditCard, ID;
     ArrayList<Items> itemList = new ArrayList<>();
     
     double total;
 
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
         super(id, pw);
+        this.ID = id;
         this.fname = f;
         this.lname = l;
         this.phone = ph;
@@ -82,13 +80,14 @@ public class Customer extends User implements Serializable, CustomerInterface{
 
     public Order MakeOrderRequest(Scanner in, Bank bank_) {
         Order requestedOrder = null;
+        Date date = new Date();
         if (itemList.isEmpty()) {
             System.out.println("No items in cart to make order.");
         } else {
-            System.out.println("Verifying with bank....");
-            Date date = new Date();
             int auth = 0;
             while (auth == 0) {
+            System.out.println("Verifying with bank....");
+
                 auth = bank_.isValid(this.creditCard, total);
                 if (auth == -1) {
                     System.out.println("Your card got declined. Do you have another card? (1 for yes)");
@@ -98,18 +97,16 @@ public class Customer extends User implements Serializable, CustomerInterface{
                         this.creditCard = changeCard(in);
                         auth = 0;
                     } else {
-                        break;
+                       System.out.println("Cannot make an order with this card.");
                     }
                 }
-                break;
 
             }
-
+            System.out.println(auth);
             if (auth > 0) {
                 SimpleDateFormat date_ = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
                 requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), itemList);
                 requestedOrder.setStatus("ORDERED");
-                itemList.clear();
 
             } else {
                 System.out.println("Cannot make order.");
@@ -119,37 +116,37 @@ public class Customer extends User implements Serializable, CustomerInterface{
         return requestedOrder;
     }
 
-    public void ViewOrder(Scanner in, ArrayList<Order>orders){
+    public void ViewOrder(Scanner in, HashMap<String, ArrayList<Order>> orders){
         System.out.println("Viewing order....");
         if(orders.isEmpty()){
             System.out.println("No orders to view...");
         }
         else{
             System.out.println("*****Available Orders******");
-            for(int i = 0; i< orders.size(); ++i){
-                orders.get(i).shortDetails();
+            for(int i = 0; i < orders.get(this.ID).size(); ++i){
+                System.out.println(i + ". " + orders.get(this.ID).get(i).shortDetails());
             }
+
             System.out.println("Which order would you like to view?: ");
             int o = in.nextInt();
             in.nextLine();
-            System.out.println("Order date: " + orders.get(o).date);
-            System.out.println("Status: " + orders.get(o).getStatus());
-            orders.get(0).details();
+            System.out.println("Order date: " + orders.get(this.ID).get(o).date);
+            System.out.println("Status: " + orders.get(this.ID).get(o).getStatus());
+            orders.get(this.ID).get(o).details();
             System.out.println("\t\t Items \t Quantity \t Cost");
-            orders.get(o).view();
-            System.out.println("\t Total \t\t ----------------- " + orders.get(o).getTotal());
+            orders.get(this.ID).get(o).view();
+            System.out.println("\t Total \t\t ----------------- " + orders.get(this.ID).get(o).getTotal());
         }
 
     }
 
     public String changeCard(Scanner in){
         String cc = "";
-        int c = 0;
-        while (c == 0){
+        while (cc.equals("")){
             System.out.print("Enter new credit card number (enter 'x' to exit.): ");
             cc = in.nextLine();
             try {
-                if (cc == "x") {
+                if (cc.equals("x")) {
                     return this.creditCard;
                 }
                 Long.parseLong(cc);
@@ -158,7 +155,6 @@ public class Customer extends User implements Serializable, CustomerInterface{
                 cc = "";
                 continue;
             }
-            c =1;
         }
         return cc;
     }
