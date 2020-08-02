@@ -1,5 +1,6 @@
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -12,7 +13,7 @@ abstract class User implements Serializable {
         this.password = password;
     }
 
-    final void createAccount(Scanner in, HashMap<String, String> rawID, HashMap<String, Customer> custs){
+    final void createAccount(Scanner in, HashMap<String, String> rawID, HashMap<String, Customer> custs, HashMap<String, ArrayList<Order>> orders){
         int c = 0;
         String role, pw, ID;
         pw =ID = role = "";
@@ -95,6 +96,8 @@ abstract class User implements Serializable {
             }
             rawID.put(ID, pw);
             custs.put(ID, new Customer(ID, pw, Fname, Lname, phone, address, creditCard));
+            orders.put(ID, new ArrayList<Order>());
+
         }
         else{
             rawID.put(ID, pw);
