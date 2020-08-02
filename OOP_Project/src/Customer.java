@@ -105,7 +105,8 @@ public class Customer extends User implements Serializable, CustomerInterface{
             System.out.println(auth);
             if (auth > 0) {
                 SimpleDateFormat date_ = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), itemList);
+                ArrayList<Items> orderList  = this.itemList;
+                requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), orderList);
                 requestedOrder.setStatus("ORDERED");
 
             } else {
@@ -190,7 +191,13 @@ public class Customer extends User implements Serializable, CustomerInterface{
         while (use_case == -1) {
             System.out.print(MENU);
             System.out.print(INSTR);
-            int choice = in.nextInt();
+            String choiceChar = in.nextLine();
+            int choice = 0;
+            try {
+                choice = Integer.parseInt(choiceChar);
+            }catch (Exception e){
+                choice = -10;
+            }
             switch (choice) {
                 case 1:
                     use_case = 4;
