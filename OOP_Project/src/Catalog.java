@@ -7,7 +7,7 @@ class Catalog {
 	void display() {
 		BufferedReader reader;
 		try {
-			reader = new BufferedReader(new FileReader("catalog.csv"));
+			reader = new BufferedReader(new FileReader("src/catalog.csv"));
 			String line = reader.readLine();
 			while (line != null) {
 				System.out.println(line);
@@ -23,7 +23,7 @@ class Catalog {
 	String getItem(int line){
 		BufferedReader reader;
 		try {
-			reader = new BufferedReader(new FileReader("catalog.csv"));
+			reader = new BufferedReader(new FileReader("src/catalog.csv"));
 			for(int i = 0; i < line-1; i++)
 				reader.readLine();
 			String item = reader.readLine();

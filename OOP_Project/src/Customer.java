@@ -1,5 +1,8 @@
+import java.io.DataInputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -77,16 +80,66 @@ public class Customer extends User implements Serializable, CustomerInterface{
         System.out.println("Total: $" + total);
     }
 
-    public void MakeOrderRequest(){
-        System.out.print("Verifying with bank....");
-        // If verified by the bank, make order request else print cannot make order and call change card number method here to let user edit their card number.
+    public Order MakeOrderRequest(Scanner in, Bank bank_) {
+        Order requestedOrder = null;
+        if (itemList.isEmpty()) {
+            System.out.println("No items in cart to make order.");
+        } else {
+            System.out.println("Verifying with bank....");
+            Date date = new Date();
+            int auth = 0;
+            while (auth == 0) {
+                auth = bank_.isValid(this.creditCard, total);
+                if (auth == -1) {
+                    System.out.println("Your card got declined. Do you have another card? (1 for yes)");
+                    int anotherCard = in.nextInt();
+                    in.nextLine();
+                    if (anotherCard == 1) {
+                        this.creditCard = changeCard(in);
+                        auth = 0;
+                    } else {
+                        break;
+                    }
+                }
+                break;
 
-        // this.creditCard = changeCard(input);
+            }
+
+            if (auth > 0) {
+                SimpleDateFormat date_ = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+                requestedOrder = new Order(this.fname + ' ' + this.lname, this.address, this.phone, this.creditCard, auth, date_.format(date), itemList);
+                requestedOrder.setStatus("ORDERED");
+                itemList.clear();
+
+            } else {
+                System.out.println("Cannot make order.");
+            }
+        }
+
+        return requestedOrder;
     }
 
-    public void ViewOrder(){
-        System.out.print("Viewing order....");
-        // Add your view order class here....
+    public void ViewOrder(Scanner in, ArrayList<Order>orders){
+        System.out.println("Viewing order....");
+        if(orders.isEmpty()){
+            System.out.println("No orders to view...");
+        }
+        else{
+            System.out.println("*****Available Orders******");
+            for(int i = 0; i< orders.size(); ++i){
+                orders.get(i).shortDetails();
+            }
+            System.out.println("Which order would you like to view?: ");
+            int o = in.nextInt();
+            in.nextLine();
+            System.out.println("Order date: " + orders.get(o).date);
+            System.out.println("Status: " + orders.get(o).getStatus());
+            orders.get(0).details();
+            System.out.println("\t\t Items \t Quantity \t Cost");
+            orders.get(o).view();
+            System.out.println("\t Total \t\t ----------------- " + orders.get(o).getTotal());
+        }
+
     }
 
     public String changeCard(Scanner in){
