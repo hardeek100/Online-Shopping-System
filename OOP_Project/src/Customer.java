@@ -1,16 +1,28 @@
-import java.io.DataInputStream;
+/*
+        Class Customer
+            This class would run use cases for the customer.
+            1. Add items
+            2. Remove items
+            3. Show cart
+            4. Make Order Request
+            5. View Order
+            6. Exit
+
+ */
+
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Customer extends User implements Serializable, CustomerInterface{
     private String fname, lname, phone, address, creditCard, ID;
-    ArrayList<Items> itemList = new ArrayList<>();
-    
-    double total;
+    ArrayList<Items> itemList = new ArrayList<>();                      // Arraylist to store customers cart items.
+    double total;                                                       // Total cost of cart items.
 
+    //Constructor
     public Customer(String id, String pw, String f, String l, String ph, String ad, String crC){
-        super(id, pw);
+        super(id, pw);                  // Calling super class "User"
         this.ID = id;
         this.fname = f;
         this.lname = l;
@@ -19,9 +31,10 @@ public class Customer extends User implements Serializable, CustomerInterface{
         this.creditCard = crC;
     }
 
-    public void addItems(Scanner in, Items item_) {//Set<Items> items_){
-        //ArrayList<Items> itemList = new ArrayList<>(items_);
-        if(itemList.size() == 0) {
+    //------------------------------------------------ Use cases --------------------------------------------------
+
+    public void addItems(Scanner in, Items item_) {
+            if(itemList.size() == 0) {
             itemList.add(item_);
             total = item_.price;
         }
@@ -159,6 +172,8 @@ public class Customer extends User implements Serializable, CustomerInterface{
         }
         return cc;
     }
+
+    //---------------------------------------------- getset methods ---------------------------------------------------------
 
     public String getName(){
         return this.fname + " " + this.lname;
